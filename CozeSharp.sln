@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35222.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CozeSharp", "CozeSharp\CozeSharp.csproj", "{E1431FCD-B30F-4BBA-9B3F-E39E19CF53ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CozeSharp_Test", "CozeSharp_Test\CozeSharp_Test.csproj", "{FC5DEE44-E8D2-415C-9954-BCE607EAAD63}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E1431FCD-B30F-4BBA-9B3F-E39E19CF53ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1431FCD-B30F-4BBA-9B3F-E39E19CF53ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1431FCD-B30F-4BBA-9B3F-E39E19CF53ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1431FCD-B30F-4BBA-9B3F-E39E19CF53ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC5DEE44-E8D2-415C-9954-BCE607EAAD63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC5DEE44-E8D2-415C-9954-BCE607EAAD63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC5DEE44-E8D2-415C-9954-BCE607EAAD63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC5DEE44-E8D2-415C-9954-BCE607EAAD63}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EF83A668-95BF-4E26-854B-71B0CEC2C202}
+	EndGlobalSection
+EndGlobal

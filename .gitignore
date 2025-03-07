@@ -1,0 +1,11 @@
+﻿################################################################################
+# 此 .gitignore 文件已由 Microsoft(R) Visual Studio 自动创建。
+################################################################################
+
+/.vs/CozeSharp
+/CozeSharp/.vs/CozeSharp
+/CozeSharp/obj
+/CozeSharp/bin/Debug/net8.0
+/CozeSharp_Test/bin/Debug/net8.0
+/CozeSharp_Test/obj/Debug/net8.0
+/CozeSharp_Test/obj
