@@ -50,7 +50,7 @@ namespace CozeSharp.Serivces
             // 初始化音频输入相关组件
             _waveIn = new WaveInEvent();
             _waveIn.WaveFormat = new WaveFormat(48000, Bitrate, Channels);
-            _waveIn.BufferMilliseconds = 60;
+            _waveIn.BufferMilliseconds = FrameDuration;
             _waveIn.DataAvailable += WaveIn_DataAvailable;
 
             // 启动音频播放线程

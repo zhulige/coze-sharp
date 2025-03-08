@@ -73,6 +73,11 @@ namespace CozeSharp
         /// <param name="opus"></param>
         private void _webSocketService_OnAudioEvent(byte[] opus)
         {
+            if (_audioService != null)
+            {
+                _audioService.OpusPlayEnqueue(opus);
+            }
+
             if (OnAudioEvent != null)
                 OnAudioEvent(opus);
         }
@@ -94,7 +99,7 @@ namespace CozeSharp
         /// <returns></returns>
         public async Task SendMessageAsync(string message) {
             if(_webSocketService!=null)
-                await _webSocketService.SendMessageAsync(message);
+                await _webSocketService.SendMessageAsync(WebSocketProtocol.Conversation_Message_Create(message));
         }
 
         /// <summary>
@@ -110,11 +115,14 @@ namespace CozeSharp
         /// <summary>
         /// 结束录音
         /// </summary>
-        public void StopRecording() 
+        public void StopRecording()
         {
             //Console.WriteLine("结束录音");
-            if (_audioService != null)
+            if (_audioService != null && _webSocketService != null)
+            {
                 _audioService.StopRecording();
+                _ = _webSocketService.SendMessageAsync(WebSocketProtocol.Input_Audio_Buffer_Complete());
+            }
         }
     }
 }

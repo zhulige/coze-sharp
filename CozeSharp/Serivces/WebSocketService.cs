@@ -1,4 +1,5 @@
 ﻿using CozeSharp.Protocols;
+using CozeSharp.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,6 @@ namespace CozeSharp.Serivces
         public delegate void AudioEventHandler(byte[] opus);
         public event MessageEventHandler? OnMessageEvent = null;
         public event AudioEventHandler? OnAudioEvent = null;
-        public bool IsDebug { get; set; } = true;
 
         private string? _webSocketUrl { get; set; }
         private string? _token { get; set; }
@@ -32,28 +32,22 @@ namespace CozeSharp.Serivces
             _conversionId = conversionId;
             _userId = userId;
 
-            Uri uriChat = new Uri(_webSocketUrl + "/v1/chat");
+            Uri uriChat = new Uri(_webSocketUrl + "/v1/chat?bot_id=" + _botId);
             _webSocketChat = new ClientWebSocket();
             _webSocketChat.Options.SetRequestHeader("Authorization", "Bearer " + _token);
             _webSocketChat.ConnectAsync(uriChat, CancellationToken.None);
-            if (IsDebug)
-            {
-                Console.WriteLine(uriChat.ToString());
-                Console.WriteLine("WebSocket Chat 初始化完成");
-            }
+            
+            LogConsole.WriteLine(uriChat.ToString());
+            LogConsole.WriteLine("WebSocket Chat 初始化完成");
 
-            Console.Write("WebSocket Chat 连接中...");
+            LogConsole.Write("WebSocket Chat 连接中...");
             while (_webSocketChat.State != WebSocketState.Open)
             {
-                if (IsDebug)
-                    Console.Write(".");
+                Console.Write(".");
                 Thread.Sleep(100);
             }
-            if (IsDebug)
-            {
-                Console.WriteLine("");
-                Console.WriteLine("WebSocket 连接成功 WebSocket.State:" + _webSocketChat.State.ToString());
-            }
+            Console.WriteLine("");
+            LogConsole.WriteLine("WebSocket 连接成功 WebSocket.State:" + _webSocketChat.State.ToString());
             
             // WebSocket 接收消息
             Task.Run(async () =>
@@ -94,18 +88,13 @@ namespace CozeSharp.Serivces
                         var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
                         if (!string.IsNullOrEmpty(message))
                         {
-                            if (IsDebug)
-                            {
-                                Console.ForegroundColor = ConsoleColor.Blue;
-                                Console.WriteLine($"WebSocket 接收到消息: {message}");
-                            }
+                            LogConsole.ReceiveLine($"WebSocket 接收到消息: {message}");
                             dynamic? msg = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(message);
                             if (msg != null)
                             {
                                 //if (msg.event_type == "conversation.message.delta") { //文字流
                                 if (msg.event_type == "conversation.message.completed")
                                 {
-                                    Console.ForegroundColor = ConsoleColor.Red;
                                     //Console.WriteLine($"WebSocket 接收到消息: {msg.event_type}");
                                     if (msg.data.content_type == "text")
                                     {
@@ -122,7 +111,7 @@ namespace CozeSharp.Serivces
                                 {
                                     if (msg.data.content_type == "audio")
                                     {
-                                        //Console.WriteLine($"WebSocket 接收到语音: {msg.data.content}");
+                                        LogConsole.ReceiveLine($"WebSocket 接收到语音: {msg.data.content}");
                                         byte[] opusBytes = Convert.FromBase64String((string)msg.data.content);
                                         if (OnAudioEvent != null)
                                         {
@@ -136,16 +125,14 @@ namespace CozeSharp.Serivces
                     }
                     if (result.MessageType == WebSocketMessageType.Binary)
                     {
-                        if (IsDebug)
-                            Console.WriteLine($"WebSocket 接收到语音: {buffer.Length}");
+                        //LogConsole.WriteLine($"WebSocket 接收到语音: {buffer.Length}");
                     }
                     await Task.Delay(10);
                 }
             }
             catch (Exception ex)
             {
-                if (IsDebug)
-                    Console.WriteLine($"WebSocket 接收消息时出错: {ex.Message}");
+                LogConsole.ErrorLine($"WebSocket 接收消息时出错: {ex.Message}");
             }
         }
 
@@ -163,11 +150,7 @@ namespace CozeSharp.Serivces
             {
                 var buffer = Encoding.UTF8.GetBytes(message);
                 await _webSocketChat.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
-                if (IsDebug)
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"WebSocket 发送的消息: {message}");
-                }
+                LogConsole.SendLine($"WebSocket 发送的消息: {message}");
             }
         }
 
@@ -178,15 +161,14 @@ namespace CozeSharp.Serivces
         /// <returns></returns>
         public async Task SendAudioAsync(string message)
         {
+            if (_webSocketChat == null)
+                return;
+
             if (_webSocketChat.State == WebSocketState.Open)
             {
                 var buffer = Encoding.UTF8.GetBytes(message);
                 await _webSocketChat.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
-                if (IsDebug)
-                {
-                    //Console.ForegroundColor = ConsoleColor.Green;
-                    //Console.WriteLine($"WebSocket 发送的语音: {message}");
-                }
+                LogConsole.SendLine($"WebSocket 发送的语音: {message}");
             }
         }
 
@@ -197,6 +179,9 @@ namespace CozeSharp.Serivces
         /// <returns></returns>
         public async Task SendOpusAsync(byte[] opus)
         {
+            if (_webSocketChat == null)
+                return;
+
             if (_webSocketChat.State == WebSocketState.Open)
             {
                 await _webSocketChat.SendAsync(new ArraySegment<byte>(opus), WebSocketMessageType.Binary, true, CancellationToken.None);
