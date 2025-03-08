@@ -10,7 +10,7 @@ namespace CozeSharp
 {
     public class CozeAgent
     {
-        public string TOKEN { get; set; } = "pat_49uGrsvy04uhIhvx4dJ6dva01fgdwd7K3yzNicOs3Bsn9nyLNkUDVeJ6hCk0Zn0l";
+        public string TOKEN { get; set; } = "pat_hNxdYnSb7Sgiaftu56MPnwu6eWZtbFIJI2MFKtCLxvcModwK1WYWia8FYhWJDnS5";
         public string WEB_BASE_URL { get; set; } = "https://api.coze.cn";
         public string WEB_SOCKET_URL { get; set; } = "wss://ws.coze.cn";
         public string BOT_ID { get; set; } = "7475209051979350070";
@@ -49,14 +49,13 @@ namespace CozeSharp
                     {
                         if (_audioService == null)
                             return;
-
-                        var packet = await _audioService._opusPackets.GetPacketAsync();
-                        if (packet.HasValue)
+                        byte[]? opusData;
+                        if (_audioService.OpusRecordEnqueue(out opusData))
                         {
-
-                            string delta = Convert.ToBase64String(_audioService.ConvertOpusToPcm(packet.Value.Packet, 16000, 1));
+                            string delta = Convert.ToBase64String(_audioService.ConvertOpusToPcm(opusData, 16000, 1));
                             await _webSocketService.SendAudioAsync(WebSocketProtocol.Input_Audio_Buffer_Append(delta));
                         }
+
                         await Task.Delay(60);
                     }
                 });

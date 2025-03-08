@@ -1,5 +1,4 @@
-﻿using CozeSharp.Pools;
-using NAudio.Wave;
+﻿using NAudio.Wave;
 using OpusSharp.Core;
 using System;
 using System.Collections.Generic;
@@ -29,33 +28,38 @@ namespace CozeSharp.Serivces
         private const int FrameSize = SampleRate * FrameDuration / 1000; // 帧大小
 
         // Opus 数据包缓存池
-        public readonly PacketCachePool _opusPackets = new PacketCachePool(1000);
+        private readonly Queue<byte[]> _opusRecordPackets = new Queue<byte[]>();
+        private readonly Queue<byte[]> _opusPlayPackets = new Queue<byte[]>();
+
         public bool IsRecording { get; private set; }
         public bool IsPlaying { get; private set; }
 
-        public AudioService() {
+        public AudioService()
+        {
 
             // 初始化 Opus 解码器
             opusDecoder = new OpusDecoder(SampleRate, Channels);
             // 初始化 Opus 编码器
-            opusEncoder = new OpusEncoder(SampleRate, Channels, OpusPredefinedValues.OPUS_APPLICATION_AUDIO);
+            opusEncoder = new OpusEncoder(SampleRate, Channels, OpusPredefinedValues.OPUS_APPLICATION_VOIP);
             // 初始化音频输出相关组件
-            var waveFormat = new WaveFormat(SampleRate, 16, Channels);
+            var waveFormat = new WaveFormat(SampleRate, Bitrate, Channels);
             _waveOut = new WaveOutEvent();
             _waveOutProvider = new BufferedWaveProvider(waveFormat);
             _waveOut.Init(_waveOutProvider);
 
             // 初始化音频输入相关组件
             _waveIn = new WaveInEvent();
-            _waveIn.WaveFormat = new WaveFormat(48000, 16, 1);
+            _waveIn.WaveFormat = new WaveFormat(48000, Bitrate, Channels);
             _waveIn.BufferMilliseconds = 60;
             _waveIn.DataAvailable += WaveIn_DataAvailable;
 
             // 启动音频播放线程
-            Thread thread = new Thread(() =>
+            Thread threadWave = new Thread(() =>
             {
                 while (true)
                 {
+                    //if (_waveOutProvider.BufferDuration > TimeSpan.FromSeconds(5))
+                    //{
                     StartPlaying();
                     while (IsPlaying)
                     {
@@ -63,9 +67,23 @@ namespace CozeSharp.Serivces
                         Thread.Sleep(10);
                     }
                     StopPlaying();
+                    //}
                 }
             });
-            thread.Start();
+            threadWave.Start();
+
+            Thread threadOpus = new Thread(() =>
+            {
+                while (true)
+                {
+                    byte[]? opusData;
+                    if (_opusPlayPackets.TryDequeue(out opusData))
+                        ReceiveOpusData(opusData);
+
+                    Thread.Sleep(10);
+                }
+            });
+            threadOpus.Start();
 
         }
 
@@ -110,7 +128,7 @@ namespace CozeSharp.Serivces
 
                 byte[] opusPacket = new byte[encodedLength];
                 Array.Copy(opusBytes, 0, opusPacket, 0, encodedLength);
-                _opusPackets.AddPacketAsync(opusPacket);
+                _opusRecordPackets.Enqueue(opusPacket);
 
             }
         }
@@ -214,6 +232,16 @@ namespace CozeSharp.Serivces
                 _waveOut?.Stop();
                 IsPlaying = false;
             }
+        }
+
+        public void OpusPlayEnqueue(byte[] opusData)
+        {
+            _opusPlayPackets.Enqueue(opusData);
+        }
+
+        public bool OpusRecordEnqueue(out byte[]? opusData)
+        {
+            return _opusRecordPackets.TryDequeue(out opusData);
         }
 
         public void ReceiveOpusData(byte[] opusData)
