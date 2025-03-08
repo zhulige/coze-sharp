@@ -10,7 +10,7 @@ namespace CozeSharp
 {
     public class CozeAgent
     {
-        public string TOKEN { get; set; } = "pat_hNxdYnSb7Sgiaftu56MPnwu6eWZtbFIJI2MFKtCLxvcModwK1WYWia8FYhWJDnS5";
+        public string TOKEN { get; set; } = "pat_OpwStwaNPCwHxtpcfcNisstwE6ncRZoaUjqxOjSyECf2CaMbvhu57377QABqshjV";
         public string WEB_BASE_URL { get; set; } = "https://api.coze.cn";
         public string WEB_SOCKET_URL { get; set; } = "wss://ws.coze.cn";
         public string BOT_ID { get; set; } = "7475209051979350070";

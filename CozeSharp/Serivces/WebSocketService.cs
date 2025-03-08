@@ -139,7 +139,7 @@ namespace CozeSharp.Serivces
                         if (IsDebug)
                             Console.WriteLine($"WebSocket 接收到语音: {buffer.Length}");
                     }
-                    await Task.Delay(60);
+                    await Task.Delay(10);
                 }
             }
             catch (Exception ex)
