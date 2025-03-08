@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CozeSharp.Protocols;
 using CozeSharp.Serivces;
 
 namespace CozeSharp
 {
     public class CozeAgent
     {
-        public string TOKEN { get; set; } = "pat_luit5zdIX1Alp6UYgee6KSSnp0LR8hUrNotfuvWf5TH29qrwxewJvYmYv8DqNwSM";
+        public string TOKEN { get; set; } = "pat_49uGrsvy04uhIhvx4dJ6dva01fgdwd7K3yzNicOs3Bsn9nyLNkUDVeJ6hCk0Zn0l";
         public string WEB_BASE_URL { get; set; } = "https://api.coze.cn";
         public string WEB_SOCKET_URL { get; set; } = "wss://ws.coze.cn";
         public string BOT_ID { get; set; } = "7475209051979350070";
@@ -24,18 +25,14 @@ namespace CozeSharp
 
         private ConversationService? _conversationService = null;
         private WebSocketService? _webSocketService = null;
+        private AudioService? _audioService = null;
 
         public CozeAgent() {
-
-            _conversationService = new ConversationService(WEB_BASE_URL, TOKEN);
-
             Task.Run(() => Run());
         }
 
         private async Task Run() {
-            if (_conversationService == null)
-                return;
-
+            _conversationService = new ConversationService(WEB_BASE_URL, TOKEN);
             var conversation = await _conversationService.CreateAsync();
             if (conversation != null)
             {
@@ -44,6 +41,25 @@ namespace CozeSharp
                 _webSocketService = new WebSocketService(WEB_SOCKET_URL, TOKEN, BOT_ID, ConversionId, USER_ID);
                 _webSocketService.OnMessageEvent += _webSocketService_OnMessageEvent;
                 _webSocketService.OnAudioEvent += _webSocketService_OnAudioEvent;
+
+                _audioService = new AudioService();
+                await Task.Run(async () =>
+                {
+                    while (true)
+                    {
+                        if (_audioService == null)
+                            return;
+
+                        var packet = await _audioService._opusPackets.GetPacketAsync();
+                        if (packet.HasValue)
+                        {
+
+                            string delta = Convert.ToBase64String(_audioService.ConvertOpusToPcm(packet.Value.Packet, 16000, 1));
+                            await _webSocketService.SendAudioAsync(WebSocketProtocol.Input_Audio_Buffer_Append(delta));
+                        }
+                        await Task.Delay(60);
+                    }
+                });
             }
             else
             {
@@ -88,6 +104,8 @@ namespace CozeSharp
         public void StartRecording()
         {
             //Console.WriteLine("开始录音...");
+            if (_audioService != null)
+                _audioService.StartRecording();
         }
 
         /// <summary>
@@ -96,6 +114,8 @@ namespace CozeSharp
         public void StopRecording() 
         {
             //Console.WriteLine("结束录音");
+            if (_audioService != null)
+                _audioService.StopRecording();
         }
     }
 }

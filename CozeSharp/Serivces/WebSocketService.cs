@@ -24,7 +24,8 @@ namespace CozeSharp.Serivces
 
         private ClientWebSocket? _webSocketChat = null;
 
-        public WebSocketService(string wsUrlChat,string token,string botId,string conversionId,string userId) { 
+        public WebSocketService(string wsUrlChat, string token, string botId, string conversionId, string userId)
+        {
             _token = token;
             _webSocketUrl = wsUrlChat;
             _botId = botId;
@@ -53,12 +54,10 @@ namespace CozeSharp.Serivces
                 Console.WriteLine("");
                 Console.WriteLine("WebSocket 连接成功 WebSocket.State:" + _webSocketChat.State.ToString());
             }
-
+            
             // WebSocket 接收消息
             Task.Run(async () =>
             {
-                await SendMessageAsync(WebSocketProtocol.Chat_Update(_conversionId, _userId));
-
                 await ReceiveMessagesAsync();
             });
 
@@ -82,6 +81,11 @@ namespace CozeSharp.Serivces
             var buffer = new byte[1024];
             try
             {
+                if (_webSocketChat == null)
+                    return;
+
+                await SendMessageAsync(WebSocketProtocol.Chat_Update(_conversionId, _userId));
+
                 while (_webSocketChat.State == WebSocketState.Open)
                 {
                     var result = await _webSocketChat.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
@@ -152,6 +156,9 @@ namespace CozeSharp.Serivces
         /// <returns></returns>
         public async Task SendMessageAsync(string message)
         {
+            if (_webSocketChat == null)
+                return;
+
             if (_webSocketChat.State == WebSocketState.Open)
             {
                 var buffer = Encoding.UTF8.GetBytes(message);
