@@ -16,8 +16,10 @@ namespace CozeSharp.Serivces
         private string? _token { get; set; }
         public ConversationService(string baseurl, string token)
         {
-            _baseUrl = baseurl;
-            _token = token;
+            if(!string.IsNullOrEmpty(baseurl))
+                _baseUrl = baseurl;
+            if (!string.IsNullOrEmpty(token))
+                _token = token;
         }
         public async Task<dynamic?> CreateAsync()
         {

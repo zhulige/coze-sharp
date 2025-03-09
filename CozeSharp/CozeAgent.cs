@@ -27,11 +27,20 @@ namespace CozeSharp
         private WebSocketService? _webSocketService = null;
         private AudioService? _audioService = null;
 
-        public CozeAgent() {
-            Task.Run(() => Run());
+        public CozeAgent()
+        {
+            
+        }
+        public CozeAgent(string token,string botid,string userid) {
+            if(!string.IsNullOrEmpty(token))
+                TOKEN = token;
+            if(!string.IsNullOrEmpty(botid))
+                BOT_ID = botid;
+            if (!string.IsNullOrEmpty(userid))
+                USER_ID = userid;
         }
 
-        private async Task Run() {
+        public async Task Start() {
             _conversationService = new ConversationService(WEB_BASE_URL, TOKEN);
             var conversation = await _conversationService.CreateAsync();
             if (conversation != null)

@@ -26,11 +26,16 @@ namespace CozeSharp.Serivces
 
         public WebSocketService(string wsUrlChat, string token, string botId, string conversionId, string userId)
         {
-            _token = token;
-            _webSocketUrl = wsUrlChat;
-            _botId = botId;
-            _conversionId = conversionId;
-            _userId = userId;
+            if (!string.IsNullOrEmpty(token))
+                _token = token;
+            if (!string.IsNullOrEmpty(wsUrlChat))
+                _webSocketUrl = wsUrlChat;
+            if (!string.IsNullOrEmpty(botId))
+                _botId = botId;
+            if (!string.IsNullOrEmpty(conversionId))
+                _conversionId = conversionId;
+            if (!string.IsNullOrEmpty(userId))
+                _userId = userId;
 
             Uri uriChat = new Uri(_webSocketUrl + "/v1/chat?bot_id=" + _botId);
             _webSocketChat = new ClientWebSocket();
@@ -98,8 +103,8 @@ namespace CozeSharp.Serivces
                                     //Console.WriteLine($"WebSocket 接收到消息: {msg.event_type}");
                                     if (msg.data.content_type == "text")
                                     {
-                                        Console.WriteLine($"WebSocket 接收到消息: {msg.role} ： {msg.data.content}");
-                                        if (msg.role == "assistant")
+                                        LogConsole.WriteLine($"WebSocket 接收到消息: {msg.data.role} ： {msg.data.content}");
+                                        if (msg.data.role == "assistant")
                                         {
                                             if (OnMessageEvent != null)
                                                 OnMessageEvent((string)msg.data.content);
@@ -184,7 +189,8 @@ namespace CozeSharp.Serivces
 
             if (_webSocketChat.State == WebSocketState.Open)
             {
-                await _webSocketChat.SendAsync(new ArraySegment<byte>(opus), WebSocketMessageType.Binary, true, CancellationToken.None);
+
+                //await _webSocketChat.SendAsync(new ArraySegment<byte>(opus), WebSocketMessageType.Binary, true, CancellationToken.None);
             }
         }
     }

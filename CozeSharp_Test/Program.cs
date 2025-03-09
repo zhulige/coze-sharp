@@ -23,6 +23,7 @@ class Program
 ========================================================================";
         Console.WriteLine(logoAndCopyright);
         _cozeAgent = new CozeAgent();
+        _cozeAgent.Start();
 
         while (true)
         {
