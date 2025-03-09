@@ -46,7 +46,7 @@ namespace CozeSharp
             if (conversation != null)
             {
                 ConversionId = conversation.data.id;
-                Console.WriteLine("创建会话成功 - " + ConversionId);
+                Console.WriteLine("扣子：创建会话成功 - " + ConversionId);
                 _webSocketService = new WebSocketService(WEB_SOCKET_URL, TOKEN, BOT_ID, ConversionId, USER_ID);
                 _webSocketService.OnMessageEvent += _webSocketService_OnMessageEvent;
                 _webSocketService.OnAudioEvent += _webSocketService_OnAudioEvent;
@@ -71,7 +71,7 @@ namespace CozeSharp
             }
             else
             {
-                Console.WriteLine("启动失败 - 获取会话失败");
+                Console.WriteLine("扣子：启动失败 - 获取会话失败");
             }
 
         }

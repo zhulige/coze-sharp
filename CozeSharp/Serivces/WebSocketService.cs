@@ -42,17 +42,17 @@ namespace CozeSharp.Serivces
             _webSocketChat.Options.SetRequestHeader("Authorization", "Bearer " + _token);
             _webSocketChat.ConnectAsync(uriChat, CancellationToken.None);
             
-            LogConsole.WriteLine(uriChat.ToString());
-            LogConsole.WriteLine("WebSocket Chat 初始化完成");
+            //LogConsole.WriteLine(uriChat.ToString());
+            LogConsole.WriteLine("扣子：WebSocketChat 初始化完成");
 
-            LogConsole.Write("WebSocket Chat 连接中...");
+            LogConsole.Write("扣子：WebSocketChat 连接中...");
             while (_webSocketChat.State != WebSocketState.Open)
             {
                 Console.Write(".");
                 Thread.Sleep(100);
             }
             Console.WriteLine("");
-            LogConsole.WriteLine("WebSocket 连接成功 WebSocket.State:" + _webSocketChat.State.ToString());
+            LogConsole.WriteLine("扣子：WebSocket 连接成功 WebSocket.State:" + _webSocketChat.State.ToString());
             
             // WebSocket 接收消息
             Task.Run(async () =>
@@ -93,7 +93,7 @@ namespace CozeSharp.Serivces
                         var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
                         if (!string.IsNullOrEmpty(message))
                         {
-                            LogConsole.ReceiveLine($"WebSocket 接收到消息: {message}");
+                            LogConsole.ReceiveLine($"扣子：{message}");
                             dynamic? msg = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(message);
                             if (msg != null)
                             {
@@ -103,7 +103,7 @@ namespace CozeSharp.Serivces
                                     //Console.WriteLine($"WebSocket 接收到消息: {msg.event_type}");
                                     if (msg.data.content_type == "text")
                                     {
-                                        LogConsole.WriteLine($"WebSocket 接收到消息: {msg.data.role} ： {msg.data.content}");
+                                        LogConsole.ReceiveLine($"扣子： {msg.data.role} ： {msg.data.content}");
                                         if (msg.data.role == "assistant")
                                         {
                                             if (OnMessageEvent != null)
@@ -116,7 +116,7 @@ namespace CozeSharp.Serivces
                                 {
                                     if (msg.data.content_type == "audio")
                                     {
-                                        LogConsole.ReceiveLine($"WebSocket 接收到语音: {msg.data.content}");
+                                        LogConsole.ReceiveLine($"扣子：{msg.data.content}");
                                         byte[] opusBytes = Convert.FromBase64String((string)msg.data.content);
                                         if (OnAudioEvent != null)
                                         {
@@ -137,7 +137,7 @@ namespace CozeSharp.Serivces
             }
             catch (Exception ex)
             {
-                LogConsole.ErrorLine($"WebSocket 接收消息时出错: {ex.Message}");
+                LogConsole.ErrorLine($"扣子：WebSocket 接收消息时出错: {ex.Message}");
             }
         }
 
@@ -155,7 +155,7 @@ namespace CozeSharp.Serivces
             {
                 var buffer = Encoding.UTF8.GetBytes(message);
                 await _webSocketChat.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
-                LogConsole.SendLine($"WebSocket 发送的消息: {message}");
+                LogConsole.SendLine($"扣子：{message}");
             }
         }
 
@@ -173,7 +173,7 @@ namespace CozeSharp.Serivces
             {
                 var buffer = Encoding.UTF8.GetBytes(message);
                 await _webSocketChat.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
-                LogConsole.SendLine($"WebSocket 发送的语音: {message}");
+                LogConsole.SendLine($"扣子：{message}");
             }
         }
 
