@@ -1,5 +1,6 @@
 ﻿using CozeSharp.Protocols;
 using CozeSharp.Utils;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,17 +94,22 @@ namespace CozeSharp.Serivces
                         var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
                         if (!string.IsNullOrEmpty(message))
                         {
-                            LogConsole.ReceiveLine($"扣子：{message}");
+                            //LogConsole.ReceiveLine($"扣子：{message}");
                             dynamic? msg = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(message);
                             if (msg != null)
                             {
+                                if (msg.event_type == "conversation.audio_transcript.completed")
+                                {
+                                    //语言识别
+                                    //LogConsole.ReceiveLine($"扣子：{msg.data.content}");
+                                }
                                 //if (msg.event_type == "conversation.message.delta") { //文字流
                                 if (msg.event_type == "conversation.message.completed")
                                 {
                                     //Console.WriteLine($"WebSocket 接收到消息: {msg.event_type}");
                                     if (msg.data.content_type == "text")
                                     {
-                                        LogConsole.ReceiveLine($"扣子： {msg.data.role} ： {msg.data.content}");
+                                        LogConsole.ReceiveLine($"扣子：{msg.data.role} ：{msg.data.content}");
                                         if (msg.data.role == "assistant")
                                         {
                                             if (OnMessageEvent != null)
@@ -116,7 +122,7 @@ namespace CozeSharp.Serivces
                                 {
                                     if (msg.data.content_type == "audio")
                                     {
-                                        LogConsole.ReceiveLine($"扣子：{msg.data.content}");
+                                        //LogConsole.ReceiveLine($"扣子：{msg.data.content}");
                                         byte[] opusBytes = Convert.FromBase64String((string)msg.data.content);
                                         if (OnAudioEvent != null)
                                         {
@@ -173,7 +179,7 @@ namespace CozeSharp.Serivces
             {
                 var buffer = Encoding.UTF8.GetBytes(message);
                 await _webSocketChat.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
-                LogConsole.SendLine($"扣子：{message}");
+                //LogConsole.SendLine($"扣子：{message}");
             }
         }
 
