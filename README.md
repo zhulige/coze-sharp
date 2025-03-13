@@ -85,7 +85,7 @@ dotnet run
 
 </details>
 
-<details>
+<details open>
   <summary>English</summary>
 
 [![SVG Banners](https://svg-banners.vercel.app/api?type=origin&text1=你好😃，扣子📟&text2=CSharp编写的扣子AI智能体客户端&width=830&height=210)](https://github.com/zhulige/coze-sharp)
