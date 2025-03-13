@@ -6,7 +6,6 @@
 
 # CozeSharp - 扣子AI智能体客户端
 
-## SVG Banners
 ![License](https://img.shields.io/github/license/zhulige/coze-sharp)
 ![Stars](https://img.shields.io/github/stars/zhulige/coze-sharp)
 ![Issues](https://img.shields.io/github/issues/zhulige/coze-sharp)
@@ -92,7 +91,6 @@ dotnet run
 
 # CozeSharp - Coze AI Agent Client
 
-## SVG Banners
 ![License](https://img.shields.io/github/license/zhulige/coze-sharp)
 ![Stars](https://img.shields.io/github/stars/zhulige/coze-sharp)
 ![Issues](https://img.shields.io/github/issues/zhulige/coze-sharp)
