@@ -1,5 +1,6 @@
 # 扣子Coze Chat SDK
-<p align="center">
+
+<p>
   <a href="https://github.com/zhulige/coze-sharp/releases/latest">
     <img src="https://img.shields.io/github/v/release/zhulige/coze-sharp?style=flat-square&logo=github&color=blue" alt="Release"/>
   </a>
@@ -13,13 +14,37 @@
     <img src="https://img.shields.io/github/downloads/zhulige/coze-sharp/total?style=flat-square&logo=github&color=52c41a1&maxAge=86400" alt="Download"/>
   </a>
 </p>
-
-<p align="center">
+<p>
   简体中文 | English
 </p>
 
 ## 项目简介 
 CozeSharp 是使用 C# 语言编写的 “扣子Coze Chat SDK”，并提供了ConsoleApp 应用。
+
+## 示例
+``` C#
+using CozeSharp;
+
+CozeAgent agent = new CozeAgent();
+agent.Token = configuration["CozeSettings:Token"];
+agent.BotId = configuration["CozeSettings:BotId"];
+agent.UserId = configuration["CozeSettings:UserId"];
+agent.OnMessageEvent += Agent_OnMessageEvent;
+await agent.Start();
+
+private static Task Agent_OnMessageEvent(string type, string message)
+{
+    LogConsole.InfoLine($"[{type}] {message}");
+    return Task.CompletedTask;
+}
+```
+
+详见 CozeSharp_ConsoleApp 项目。
+
+## NuGet
+```
+dotnet add package CozeSharp --version 1.0.1
+```
 
 ## 相关资源
 https://opus-codec.org/downloads/
