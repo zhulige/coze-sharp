@@ -96,17 +96,21 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
           body: |
             此版本包含以下更新：
             - 待添加具体更新内容
+          files: publish/CozeSharp_ConsoleApp.zip
+          draft: false
+          prerelease: false
 
       - name: Upload Windows Application Package to Release
+        if: always()
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
