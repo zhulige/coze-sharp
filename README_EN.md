@@ -1,5 +1,5 @@
 # Coze Chat SDK
-<p align="center">
+<p>
   <a href="https://github.com/zhulige/coze-sharp/releases/latest">
     <img src="https://img.shields.io/github/v/release/zhulige/coze-sharp?style=flat-square&logo=github&color=blue" alt="Release"/>
   </a>
@@ -14,12 +14,31 @@
   </a>
 </p>
 
-<p align="center">
-  简体中文 | English
-</p>
-
 ## Project Introduction
 CozeSharp is the "Coze Chat SDK" developed in C# language, accompanied by a ConsoleApp demonstration.
+
+## Example
+``` C#
+using CozeSharp;
+
+CozeAgent agent = new CozeAgent();
+agent.Token = configuration["CozeSettings:Token"];
+agent.BotId = configuration["CozeSettings:BotId"];
+agent.UserId = configuration["CozeSettings:UserId"];
+agent.OnMessageEvent += Agent_OnMessageEvent;
+await agent.Start();
+
+private static Task Agent_OnMessageEvent(string type, string message)
+{
+    LogConsole.InfoLine($"[{type}] {message}");
+    return Task.CompletedTask;
+}
+```
+
+## NuGet
+```
+dotnet add package CozeSharp --version 1.0.1
+```
 
 ## Related Resources
 https://opus-codec.org/downloads/
