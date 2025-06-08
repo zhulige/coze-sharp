@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CozeSharp.Serivces.Chat
+namespace CozeSharp.Services.Chat
 {
     public class ChatService
     {

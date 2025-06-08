@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CozeSharp.Protocols;
-using CozeSharp.Serivces;
+using CozeSharp.Services;
 using CozeSharp.Utils;
 
 namespace CozeSharp
@@ -13,9 +13,9 @@ namespace CozeSharp
     {
         private string _apiUrl { get; set; } = "https://api.coze.cn";
         private string _wsUrl { get; set; } = "wss://ws.coze.cn";
-        private Serivces.Chat.ChatService? _chatService = null;
-        private Serivces.AudioWaveService? _audioService =null;
-        private Serivces.AudioOpusService _audioOpusService = new Serivces.AudioOpusService();
+        private Services.Chat.ChatService? _chatService = null;
+        private Services.AudioWaveService? _audioService =null;
+        private Services.AudioOpusService _audioOpusService = new Services.AudioOpusService();
 
         #region 属性
         /// <summary>
@@ -76,7 +76,7 @@ namespace CozeSharp
                 }
             }
 
-            _chatService = new Serivces.Chat.ChatService(_wsUrl, Token, BotId);
+            _chatService = new Services.Chat.ChatService(_wsUrl, Token, BotId);
             _chatService.ConversionId = ConversionId;
             _chatService.UserId = UserId;
             _chatService.UserLanguage = "zh"; // 设置用户语言为中文

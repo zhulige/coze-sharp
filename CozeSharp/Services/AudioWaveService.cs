@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CozeSharp.Serivces
+namespace CozeSharp.Services
 {
     public class AudioWaveService : IAudioService, IDisposable
     {
