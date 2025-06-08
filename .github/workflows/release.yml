@@ -100,7 +100,10 @@ jobs:
       - name: Create Windows Application Package
         run: |
           cd publish
-          Compress-Archive -Path . -DestinationPath CozeSharp_ConsoleApp.zip
+          Compress-Archive -Path . -DestinationPath CozeSharp_ConsoleApp-win-x64.zip
+          echo "Created package: CozeSharp_ConsoleApp-win-x64.zip"
+          Get-Item CozeSharp_ConsoleApp-win-x64.zip
+        shell: pwsh
 
       - name: Create Release and Upload Asset
         uses: softprops/action-gh-release@v1
