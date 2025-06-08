@@ -1,4 +1,4 @@
-name: Automated Release
+name: CozeSharp Release and Packaging
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
       - 'v*'  # 当推送以 v 开头的标签时触发此工作流
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build-and-publish:
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -18,8 +18,23 @@ jobs:
         with:
           dotnet-version: '8.0.x'  # 根据项目实际使用的 .NET 版本进行修改
 
-      - name: Build project
-        run: dotnet build --configuration Release
+      - name: Build CozeSharp
+        run: dotnet build CozeSharp/CozeSharp.csproj --configuration Release
+
+      - name: Pack CozeSharp for NuGet
+        run: dotnet pack CozeSharp/CozeSharp.csproj --configuration Release --output nupkgs
+
+      - name: Publish CozeSharp to NuGet
+        run: dotnet nuget push nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+        continue-on-error: false
+
+      - name: Build CozeSharp_ConsoleApp
+        run: dotnet publish CozeSharp_ConsoleApp/CozeSharp_ConsoleApp.csproj -c Release -r win-x64 --self-contained true -o publish
+
+      - name: Create Windows Application Package
+        run: |
+          cd publish
+          Compress-Archive -Path . -DestinationPath CozeSharp_ConsoleApp.zip
 
       - name: Create Release
         id: create_release
@@ -33,25 +48,12 @@ jobs:
             此版本包含以下更新：
             - 待添加具体更新内容
 
-      - name: Package and Upload Release Asset
-        run: |
-          dotnet publish CozeSharp/CozeSharp.csproj -c Release -o publish
-          zip -r CozeSharp.zip publish
-          gh release upload ${{ github.ref_name }} CozeSharp.zip
+      - name: Upload Windows Application Package to Release
+        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Pack NuGet Package
-        run: |
-          # 从标签名中提取版本号
-          TAG=${{ github.ref_name }}
-          VERSION=${TAG:1}  # 移除v前缀
-          
-          # 创建NuGet包
-          dotnet pack CozeSharp/CozeSharp.csproj -c Release -o nuget --version-suffix $VERSION
-
-      - name: Push NuGet Package
-        run: |
-          dotnet nuget push nuget/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
-        env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: publish/CozeSharp_ConsoleApp.zip
+          asset_name: CozeSharp_ConsoleApp.zip
+          asset_content_type: application/zip
