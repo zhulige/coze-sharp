@@ -2,10 +2,12 @@
 
   <PropertyGroup>
     <PackageId>CozeSharp</PackageId>
-    <Version>1.0.0</Version>
     <Description>扣子Coze Chat SDK</Description>
     <Authors>ZhuLige</Authors>
     <TargetFramework>net8.0</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageProjectUrl>http://coze.nbee.net</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/zhulige/coze-sharp</RepositoryUrl>
   </PropertyGroup>
 
 
