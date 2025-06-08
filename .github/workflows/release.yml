@@ -83,19 +83,26 @@ jobs:
         shell: pwsh
         continue-on-error: false
 
-      - name: Build CozeSharp_ConsoleApp
+      - name: Build CozeSharp_ConsoleApp (独立文件部署，Windows x64)
         run: |
           $TAG = "${{ github.ref_name }}"
           $VERSION = $TAG.Substring(1)  # 移除v前缀
+          echo "Building self-contained Windows x64 application with version $VERSION"
+          
+          # 发布独立文件部署的Windows x64应用程序
           dotnet publish CozeSharp_ConsoleApp/CozeSharp_ConsoleApp.csproj -c Release -r win-x64 --self-contained true -o publish -p:Version=$VERSION
+          
+          # 验证输出文件
+          echo "Listing published files:"
+          Get-ChildItem -Path publish -Recurse
+        shell: pwsh
 
       - name: Create Windows Application Package
         run: |
           cd publish
           Compress-Archive -Path . -DestinationPath CozeSharp_ConsoleApp.zip
 
-      - name: Create Release
-        id: create_release
+      - name: Create Release and Upload Asset
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -105,17 +112,8 @@ jobs:
           body: |
             此版本包含以下更新：
             - 待添加具体更新内容
-          files: publish/CozeSharp_ConsoleApp.zip
+          files: |
+            publish/CozeSharp_ConsoleApp.zip
           draft: false
           prerelease: false
-
-      - name: Upload Windows Application Package to Release
-        if: always()
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: publish/CozeSharp_ConsoleApp.zip
-          asset_name: CozeSharp_ConsoleApp.zip
-          asset_content_type: application/zip
+          fail_on_unmatched_files: true
