@@ -22,10 +22,61 @@ jobs:
         run: dotnet build CozeSharp/CozeSharp.csproj --configuration Release
 
       - name: Pack CozeSharp for NuGet
-        run: dotnet pack CozeSharp/CozeSharp.csproj --configuration Release --output nupkgs
+        run: |
+          echo "Packing NuGet package with dynamic version..."
+          $TAG = "${{ github.ref_name }}"
+          $VERSION = $TAG.Substring(1)  # 移除v前缀，例如v1.0.0变成1.0.0
+          
+          # 确保输出目录存在
+          New-Item -ItemType Directory -Force -Path nupkgs
+          
+          # 执行打包命令并捕获退出代码
+          $packResult = dotnet pack CozeSharp/CozeSharp.csproj --configuration Release --output nupkgs -p:Version=$VERSION
+          $LASTEXITCODE
+          
+          # 检查打包是否成功
+          if ($LASTEXITCODE -ne 0) {
+            throw "NuGet package creation failed with exit code $LASTEXITCODE"
+          }
+          
+          # 列出打包输出目录内容
+          echo "Listing files in nupkgs directory:"
+          Get-ChildItem -Path nupkgs -Recurse
+          
+          # 列出项目文件内容以确认打包配置
+          echo "Contents of CozeSharp.csproj:"
+          Get-Content CozeSharp/CozeSharp.csproj
+        shell: pwsh
+        continue-on-error: false
+
+      - name: Verify NuGet package exists
+        run: |
+          $nupkgFiles = Get-ChildItem -Path nupkgs -Filter *.nupkg
+          if ($nupkgFiles.Count -eq 0) {
+            throw "No NuGet packages found in nupkgs directory"
+          } else {
+            echo "Found $($nupkgFiles.Count) NuGet packages:"
+            $nupkgFiles | ForEach-Object { echo $_.FullName }
+          }
+        shell: pwsh
+        continue-on-error: false
 
       - name: Publish CozeSharp to NuGet
-        run: dotnet nuget push nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+        run: |
+          echo "Publishing NuGet package..."
+          $nupkgFiles = Get-ChildItem -Path nupkgs -Filter *.nupkg
+          if ($nupkgFiles.Count -eq 0) {
+            throw "No NuGet packages found to publish"
+          }
+          
+          foreach ($file in $nupkgFiles) {
+            echo "Publishing package: $($file.FullName)"
+            dotnet nuget push $file.FullName --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+            if ($LASTEXITCODE -ne 0) {
+              throw "Failed to publish package: $($file.FullName)"
+            }
+          }
+        shell: pwsh
         continue-on-error: false
 
       - name: Build CozeSharp_ConsoleApp
