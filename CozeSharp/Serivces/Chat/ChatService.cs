@@ -185,7 +185,8 @@ namespace CozeSharp.Serivces.Chat
             {
                 var buffer = Encoding.UTF8.GetBytes(message);
                 await _webSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
-                LogConsole.SendLine($"{TAG} {message}");
+                if (Global.IsDebug)
+                    LogConsole.SendLine($"{TAG} {message}");
             }
         }
 
