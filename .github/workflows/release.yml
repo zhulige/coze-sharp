@@ -90,7 +90,7 @@ jobs:
           echo "Building self-contained Windows x64 application with version $VERSION"
           
           # 发布独立文件部署的Windows x64应用程序
-          dotnet publish CozeSharp_ConsoleApp/CozeSharp_ConsoleApp.csproj -c Release -r win-x64 --self-contained true -o publish -p:Version=$VERSION
+          dotnet publish CozeSharp_ConsoleApp/CozeSharp_ConsoleApp.csproj -c Release -r win-x64 --self-contained true -o publish -p:Version=$VERSION -p:PublishSingleFile=true -p:PublishTrimmed=true
           
           # 验证输出文件
           echo "Listing published files:"
