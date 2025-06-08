@@ -14,9 +14,6 @@
     <img src="https://img.shields.io/github/downloads/zhulige/coze-sharp/total?style=flat-square&logo=github&color=52c41a1&maxAge=86400" alt="Download"/>
   </a>
 </p>
-<p>
-  简体中文 | English
-</p>
 
 ## 项目简介 
 CozeSharp 是使用 C# 语言编写的 “扣子Coze Chat SDK”，并提供了ConsoleApp 应用。
