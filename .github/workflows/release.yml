@@ -8,6 +8,10 @@ on:
 jobs:
   build-and-publish:
     runs-on: windows-latest
+    # 添加明确的权限配置
+    permissions:
+      contents: write  # 允许创建Release和上传资产
+      packages: write  # 允许发布NuGet包
 
     steps:
       - name: Checkout code
@@ -80,7 +84,10 @@ jobs:
         continue-on-error: false
 
       - name: Build CozeSharp_ConsoleApp
-        run: dotnet publish CozeSharp_ConsoleApp/CozeSharp_ConsoleApp.csproj -c Release -r win-x64 --self-contained true -o publish
+        run: |
+          $TAG = "${{ github.ref_name }}"
+          $VERSION = $TAG.Substring(1)  # 移除v前缀
+          dotnet publish CozeSharp_ConsoleApp/CozeSharp_ConsoleApp.csproj -c Release -r win-x64 --self-contained true -o publish -p:Version=$VERSION
 
       - name: Create Windows Application Package
         run: |
