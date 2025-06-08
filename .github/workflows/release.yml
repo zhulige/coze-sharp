@@ -24,8 +24,8 @@ jobs:
       - name: Pack CozeSharp for NuGet
         run: |
           echo "Packing NuGet package with dynamic version..."
-          TAG=${{ github.ref_name }}
-          VERSION=${TAG:1}  # 移除v前缀，例如v1.0.0变成1.0.0
+          $TAG = "${{ github.ref_name }}"
+          $VERSION = $TAG.Substring(1)  # 移除v前缀，例如v1.0.0变成1.0.0
           dotnet pack CozeSharp/CozeSharp.csproj --configuration Release --output nupkgs -p:Version=$VERSION
           echo "Listing files in nupkgs directory:"
           dir nupkgs
