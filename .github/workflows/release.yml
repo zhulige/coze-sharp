@@ -116,7 +116,7 @@ jobs:
             此版本包含以下更新：
             - 待添加具体更新内容
           files: |
-            publish/CozeSharp_ConsoleApp.zip
+            publish/CozeSharp_ConsoleApp-win-x64.zip
           draft: false
           prerelease: false
           fail_on_unmatched_files: true
