@@ -22,10 +22,27 @@ jobs:
         run: dotnet build CozeSharp/CozeSharp.csproj --configuration Release
 
       - name: Pack CozeSharp for NuGet
-        run: dotnet pack CozeSharp/CozeSharp.csproj --configuration Release --output nupkgs
+        run: |
+          echo "Packing NuGet package with dynamic version..."
+          TAG=${{ github.ref_name }}
+          VERSION=${TAG:1}  # 移除v前缀，例如v1.0.0变成1.0.0
+          dotnet pack CozeSharp/CozeSharp.csproj --configuration Release --output nupkgs -p:Version=$VERSION
+          echo "Listing files in nupkgs directory:"
+          dir nupkgs
+        shell: pwsh
+
+      - name: Verify NuGet package exists
+        run: |
+          if (!(Test-Path "nupkgs/*.nupkg")) {
+            throw "No NuGet packages found in nupkgs directory"
+          }
+        shell: pwsh
 
       - name: Publish CozeSharp to NuGet
-        run: dotnet nuget push nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+        run: |
+          echo "Publishing NuGet package..."
+          dotnet nuget push nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+        shell: pwsh
         continue-on-error: false
 
       - name: Build CozeSharp_ConsoleApp
