@@ -36,44 +36,86 @@ class Program
             .Build();
 
         CozeSharp.Global.IsDebug = false;
-        CozeAgent agent = new CozeAgent();
-        agent.Token = configuration["CozeSettings:Token"];
-        agent.BotId = configuration["CozeSettings:BotId"];
-        agent.UserId = configuration["CozeSettings:UserId"];
-        agent.OnMessageEvent += Agent_OnMessageEvent;
+        CozeAgent _agent = new CozeAgent();
+        _agent.Token = configuration["CozeSettings:Token"];
+        _agent.BotId = configuration["CozeSettings:BotId"];
+        _agent.UserId = configuration["CozeSettings:UserId"];
+        _agent.OnMessageEvent += Agent_OnMessageEvent;
         //agent.OnAudioEvent += Agent_OnAudioEvent;
-        await agent.Start();
+        await _agent.Start();
+
+        _ = Task.Run(async () =>
+        {
+            while (true)
+            {
+                bool isCapsLockOn = Console.CapsLock;
+                //Console.WriteLine($"当前 Caps Lock 状态: {(isCapsLockOn ? "开启" : "关闭")}");
+                if (isCapsLockOn)
+                {
+                    if (_recordStatus == false)
+                    {
+                        _recordStatus = true;
+                        LogConsole.InfoLine("开始录音... 再次按Caps键结束录音");
+                        await _agent.StartRecording();
+                        continue;
+                    }
+                }
+                if (!isCapsLockOn)
+                {
+                    if (_recordStatus == true)
+                    {
+                        _recordStatus = false;
+                        await _agent.StopRecording();
+                        LogConsole.InfoLine("结束录音");
+                        continue;
+                    }
+                }
+                await Task.Delay(100); // 避免过于频繁的检查
+            }
+        });
 
         while (true)
         {
             string? input = Console.ReadLine();
             if (!string.IsNullOrEmpty(input))
             {
-                await agent.ChatMessage(input);
+                await _agent.ChatMessage(input);
             }
             else
             {
-                if (!_recordStatus)
-                {
-                    _recordStatus = true;
-                    Console.Title = "开始录音...";
-                    Console.WriteLine("开始录音... 再次回车结束录音");
-                    await agent.StartRecording();
-                }
-                else
-                {
-                    await agent.StopRecording();
-                    Console.Title = "扣子CozeSharp客户端";
-                    Console.WriteLine("结束录音");
-                    _recordStatus = false;
-                }
+                //if (!_recordStatus)
+                //{
+                //    _recordStatus = true;
+                //    Console.Title = "开始录音...";
+                //    Console.WriteLine("开始录音... 再次回车结束录音");
+                //    await agent.StartRecording();
+                //}
+                //else
+                //{
+                //    await agent.StopRecording();
+                //    Console.Title = "扣子CozeSharp客户端";
+                //    Console.WriteLine("结束录音");
+                //    _recordStatus = false;
+                //}
             }
         }
     }
 
     private static Task Agent_OnMessageEvent(string type, string message)
     {
-        LogConsole.InfoLine($"[{type}] {message}");
+        switch (type.ToLower())
+        {
+            case "question":
+                LogConsole.WriteLine(MessageType.Send, $"[{type}] {message}");
+                break;
+            case "answer":
+                LogConsole.WriteLine(MessageType.Recv, $"[{type}] {message}");
+                break;
+            default:
+                LogConsole.InfoLine($"[{type}] {message}");
+                break;
+        }
+        //LogConsole.InfoLine($"[{type}] {message}");
         return Task.CompletedTask;
     }
 

@@ -79,7 +79,7 @@ namespace CozeSharp.Services
                 {
                     _waveIn.StartRecording();
                     IsRecording = true;
-                    LogConsole.WriteLine("开始录音");
+                    //LogConsole.WriteLine("开始录音");
                 }
             }
         }
@@ -90,7 +90,7 @@ namespace CozeSharp.Services
                 if (IsRecording)
                 {
                     _waveIn.StopRecording();
-                    LogConsole.WriteLine("结束录音");
+                    //LogConsole.WriteLine("结束录音");
                     IsRecording = false;
                 }
             }
@@ -138,7 +138,7 @@ namespace CozeSharp.Services
                 byte[] pcmBytes48000 = e.Buffer;
                 if (!IsAudioMute(pcmBytes48000, e.BytesRecorded))
                 {
-                    Console.Title = "录音";
+                    //Console.Title = "录音";
                     byte[] pcmBytes = ConvertPcmSampleRate(pcmBytes48000, 48000, SampleRate, Channels, Bitrate);
 
                     if (OnPcmAudioEvent != null)
@@ -148,7 +148,7 @@ namespace CozeSharp.Services
                 }
                 else
                 {
-                    Console.Title = "静音";
+                    //Console.Title = "静音";
                     //LogConsole.WriteLine("静音");
                 }
             });
