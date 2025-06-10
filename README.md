@@ -18,6 +18,11 @@
 ## 项目简介 
 CozeSharp 是使用 C# 语言编写的 “扣子Coze Chat SDK”，并提供了ConsoleApp 应用。
 
+**跨平台支持**：本项目支持以下平台：
+- **操作系统**：Windows、MacOS、Linux、Android、IOS
+- **硬件平台**：x86、x86_64、arm、arm_64
+- **开发板**：ASUS Tinker Board2s、Raspberry Pi
+
 ## 示例
 ``` C#
 using CozeSharp;
