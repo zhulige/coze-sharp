@@ -45,7 +45,7 @@ private static Task Agent_OnMessageEvent(string type, string message)
 
 ## NuGet
 ```
-dotnet add package CozeSharp --version 1.0.1
+dotnet add package CozeSharp --version 1.0.2
 ```
 
 ## 相关资源
