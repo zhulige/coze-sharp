@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CozeSharp", "CozeSharp\Coze
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CozeSharp_ConsoleApp", "CozeSharp_ConsoleApp\CozeSharp_ConsoleApp.csproj", "{75D04BCD-2006-4455-9BB9-852324E4444D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CozeSharp_MauiApp", "CozeSharp_MauiApp\CozeSharp_MauiApp.csproj", "{514EDCD3-DA3E-4BA9-99D3-E79C8ED7C467}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,11 @@ Global
 		{75D04BCD-2006-4455-9BB9-852324E4444D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75D04BCD-2006-4455-9BB9-852324E4444D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75D04BCD-2006-4455-9BB9-852324E4444D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{514EDCD3-DA3E-4BA9-99D3-E79C8ED7C467}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{514EDCD3-DA3E-4BA9-99D3-E79C8ED7C467}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{514EDCD3-DA3E-4BA9-99D3-E79C8ED7C467}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{514EDCD3-DA3E-4BA9-99D3-E79C8ED7C467}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{514EDCD3-DA3E-4BA9-99D3-E79C8ED7C467}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
