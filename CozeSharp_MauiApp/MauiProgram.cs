@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CozeSharp_MauiApp.Services;
+using Microsoft.Extensions.Logging;
 
 namespace CozeSharp_MauiApp
 {
@@ -18,7 +19,7 @@ namespace CozeSharp_MauiApp
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
-
+            builder.Services.AddSingleton<CozeAgnetService>();
             return builder.Build();
         }
     }

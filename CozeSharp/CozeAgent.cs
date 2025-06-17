@@ -14,7 +14,7 @@ namespace CozeSharp
         private string _apiUrl { get; set; } = "https://api.coze.cn";
         private string _wsUrl { get; set; } = "wss://ws.coze.cn";
         private Services.Chat.ChatService? _chatService = null;
-        private Services.AudioWaveService? _audioService =null;
+        private IAudioService? _audioService =null;
         private Services.AudioOpusService _audioOpusService = new Services.AudioOpusService();
 
         #region 属性
@@ -34,6 +34,11 @@ namespace CozeSharp
         /// 会话Id
         /// </summary>
         public string? ConversionId { get; set; }
+        public IAudioService? AudioService
+        {
+            get { return _audioService; }
+            set { _audioService = value; }
+        }
         #endregion
 
         #region 事件
@@ -86,8 +91,12 @@ namespace CozeSharp
 
             if (Global.IsAudio)
             {
-                _audioService = new AudioWaveService();
-                _audioService.OnPcmAudioEvent += AudioService_OnPcmAudioEvent;
+                if (_audioService == null)
+                {
+                    _audioService = new AudioWaveService();
+                }
+                if (_audioService != null)
+                    _audioService.OnPcmAudioEvent += AudioService_OnPcmAudioEvent;
             }
         }
 

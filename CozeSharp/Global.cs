@@ -8,7 +8,7 @@ namespace CozeSharp
 {
     public class Global
     {
-        public static bool IsDebug { get; set; } = true;
+        public static bool IsDebug { get; set; } = false;
         public static bool IsAudio { get; set; } = true;
     }
 }
