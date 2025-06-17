@@ -18,6 +18,11 @@
 ## 项目简介 
 CozeSharp 是使用 C# 语言编写的 “扣子Coze Chat SDK”，并提供了ConsoleApp 应用。
 
+**跨平台支持**：本项目支持以下平台：
+- **操作系统**：Windows、MacOS、Linux、Android、IOS
+- **硬件平台**：x86、x86_64、arm、arm_64
+- **开发板**：ASUS Tinker Board2s、Raspberry Pi
+
 ## 示例
 ``` C#
 using CozeSharp;
@@ -40,16 +45,17 @@ private static Task Agent_OnMessageEvent(string type, string message)
 
 ## NuGet
 ```
-dotnet add package CozeSharp --version 1.0.1
+dotnet add package CozeSharp --version 1.0.2
 ```
 
 ## 相关资源
 https://opus-codec.org/downloads/
 
 ## 贡献与反馈
-
 如果你在使用过程中发现了项目中的问题，或者有任何改进的建议，欢迎随时提交 Issue 或者 Pull Request。你的反馈和贡献将对项目的发展和完善起到重要的作用。
 
-### 加入社群
-
+## 加入社群
 欢迎加入我们的社区，分享经验、提出建议或获取帮助！
+
+## 项目统计
+[![Star History Chart](https://api.star-history.com/svg?repos=zhulige/coze-sharp&type=Date)](https://www.star-history.com/#zhulige/coze-sharp&Date)
