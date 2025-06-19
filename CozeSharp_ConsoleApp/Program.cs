@@ -35,7 +35,7 @@ class Program
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .Build();
 
-        CozeSharp.Global.IsDebug = false;
+        CozeSharp.Global.IsDebug = true;
         CozeAgent _agent = new CozeAgent();
         _agent.Token = configuration["CozeSettings:Token"];
         _agent.BotId = configuration["CozeSettings:BotId"];

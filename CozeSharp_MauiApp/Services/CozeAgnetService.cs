@@ -50,7 +50,9 @@ namespace CozeSharp_MauiApp.Services
         {
             //CozeSharp.Global.IsAudio = false;
             _agent = new CozeAgent();
-
+            _agent.Token = "pat_YAnaVgTxedzRCG5dzLk7YU3II1TvpAfJpqqN0IKWZD16qbbHdENuep4FWpdgJaRX";
+            _agent.BotId = "7483916119175430153";
+            _agent.UserId = "ZhuLige";
             _agent.OnMessageEvent += Agent_OnMessageEvent;
             if (DeviceInfo.Platform == DevicePlatform.Android)
             {
